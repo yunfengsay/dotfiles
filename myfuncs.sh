@@ -1,19 +1,4 @@
-createDot(){
-	# echo "为 $1 创建dot 文件中"
-	# head="digraph {"
-	# footer="}"
-	# content=$(cat $1)
-    #    	# echo $content
-	# new_content=$head"\n"$content"\n"$footer
-	# if [[ ${new_content:0:7} -eq "digraph" ]]
-	# then
-	# 	echo 文件$1本身就是digraph文件
-	# else
-	# 	echo $new_content > $1.dot
-	# 	echo 创建新的digraph文件 $1.dot 成功
-	# fi
-}
-function hw {
+function hw() {
 	vim ~/.mybin/vimHelp
 }
 
@@ -26,7 +11,7 @@ function h {
     echo    "⌘ + 方向键 按方向切换标签页。"
     echo    "shift + ⌘ + s: 保存当前窗口快照。"
     echo    "⌘ + opt + b: 快照回放。很有意思的功能，你可以对你的操作根据时间轴进行回放。可以拖动下方的时间轴，也可以按左右方向键"
-	echo    "ctrl + o 返回上次的缓存文件"
+	  echo    "ctrl + o 返回上次的缓存文件"
 	cat ~/.mybin/vimHelp
 }
 
@@ -61,8 +46,8 @@ function pi {
 }
 
 function loopurl {
-	for ((i=1;i<=$1;i++));
-	do
+	for ((i=1;i<=$1;i++)); 
+	do   
 		curl -v --header "Connection: keep-alive" $2;
 		echo $2
 	done
@@ -79,7 +64,7 @@ function ios {
 function showAll {
 	alluser=$(git log --format='%aN' | sort -u)
 	while read -r user
-	do
+	do 
 		a="$user --- $(git log --author=$user --pretty=tformat: --numstat | awk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "added-lines: %s removed-lines : %s total-lines: %s\n",add,subs,loc }' -)"
 		# echo $a | awk '{printf "%-30s%-15s %-20s \n", $1,$2}'
 		echo $a
@@ -114,9 +99,9 @@ function timer {
 	shift
 	while true
 	do
-		$@
+		$@ 
 		sleep $timegap;
-		now=$(date +"%T")
+		now=$(date +"%T") 
 		echo ""
 		echo "------ $now -----"
 	done
@@ -126,12 +111,12 @@ function timer {
 function analizeCode {
 	giturl=$1
 	repoName=$(basename $giturl)
-	mkdir -p ~/.codeTmp
+	mkdir -p ~/.codeTmp 
 	tmpName=~/.codeTmp/$repoName
 	git clone $giturl $tmpName || echo $tmpName 已下载过 && true
 	cd $tmpName
 	find ./src -name "*.ts" | xargs cat > all.ts
-	statements=('if (' 'for (' '.map' '.filter' 'return ' '? ' '=')
+	statements=('if (' 'for (' '.map' '.filter' 'return ' '? ' '=')		
 	for element in ${statements[@]}
 	do
 		echo $element
@@ -152,9 +137,9 @@ function note {
 
 function newhs {
 	filepath=$1.hs
-	touch $filepath
+	touch $filepath 
 	chmod +x $filepath
-	echo "#!/usr/local/bin/runhaskell" >> $filepath
+	echo "#!/usr/local/bin/runhaskell" >> $filepath 
 }
 
 function json2ts {
@@ -162,7 +147,7 @@ function json2ts {
 	code=$(cat <<- EOF
 		const interfaceDefinition = require('json-to-ts-interface');
 		const res = interfaceDefinition($json, {})
-		console.log(res)
+		console.log(res)	
 		EOF
 	)
 	node -e $code
@@ -196,9 +181,25 @@ gitprev() {
 	else
 		n=$1
 	fi
-	git checkout HEAD~$n
+	git checkout HEAD~$n 
 }
 gitlast() {
 	branch=`git symbolic-ref refs/remotes/origin/HEAD`
 	git log --pretty=%H $branch | head -1 | xargs git checkout
+}
+
+screenToIOS() {
+ screencapture -i /tmp/screencapture.png && xcrun simctl addmedia $(xcrun simctl list | grep Booted | awk -F '[()]+' '{print $2}') /tmp/screencapture.png
+}
+
+watchClipboard() {
+	oldvalue=null
+	while true 
+	do
+		if [[ $oldvalue != $(clipboard) ]]; then
+    $@
+		oldvalue=$(clipboard)
+		sleep 1	
+		fi	
+	done
 }
