@@ -1,8 +1,8 @@
-function hw() {
+hw() {
 	vim ~/.mybin/vimHelp
 }
 
-function h {
+h() {
     echo    "⌘ + d: 垂直分屏"
     echo    "⌘ + shift + d: 水平分屏。"
     echo    "⌘ + ]和⌘ + [在最近使用的分屏直接切换."
@@ -12,40 +12,41 @@ function h {
     echo    "shift + ⌘ + s: 保存当前窗口快照。"
     echo    "⌘ + opt + b: 快照回放。很有意思的功能，你可以对你的操作根据时间轴进行回放。可以拖动下方的时间轴，也可以按左右方向键"
 	  echo    "ctrl + o 返回上次的缓存文件"
-	cat ~/.mybin/vimHelp
+	  cat ~/.mybin/vimHelp
 }
 
-function ff {
+ff() {
 	source ~/.bash_profile
+	source ~/.bashrc
 	source ~/.zshrc
 }
-function ffs {
+ffs() {
 	source ~/.myfuncs.sh
 }
 
-function newfunc {
+newfunc() {
 	vim ~/.myfuncs.sh
 }
 
-function proxy {
+proxy() {
 	export http_proxy="http://127.0.0.1:1087"
 	export https_proxy="http://127.0.0.1:1087"
 }
 
-function unproxy {
+unproxy() {
 	unset http_proxy
 	unset https_proxy
 }
 
-function lsofi {
+lsofi() {
 	lsof -i:$1
 }
 
-function pi {
+pi() {
 	ssh pi@118.25.13.120 -p 1235 -o ServerAliveInterval=30
 }
 
-function loopurl {
+loopurl() {
 	for ((i=1;i<=$1;i++)); 
 	do   
 		curl -v --header "Connection: keep-alive" $2;
@@ -53,15 +54,15 @@ function loopurl {
 	done
 }
 
-function showMe {
+showMe() {
 	git log --author=$user --pretty=tformat: --numstat | awk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "added-lines: %s removed-lines : %s total-lines: %s\n",add,subs,loc }' -
 }
 
-function ios {
+ios() {
 	xcrun instruments -w A9B40433-90ED-4F3F-A1D9-71E3CF4839A7
 }
 
-function showAll {
+showAll() {
 	alluser=$(git log --format='%aN' | sort -u)
 	while read -r user
 	do 
@@ -71,12 +72,12 @@ function showAll {
 	done
 }
 
-function blog {
+blog() {
 	open "https://www.yuque.com/yunfengsay/hdensz"
 
 }
 
-function killport {
+killport() {
 	echo "killing $1"
 	echo "running kill -9 $(lsof -t -i:$1)"
 	kill -9 $(lsof -t -i:$1)
@@ -84,7 +85,7 @@ function killport {
 	# lsof -i:$1 | awk 'NR==1 {next} {print $2 }'
 }
 
-function posttolog {
+posttolog() {
 	data=$(echo $(cat $1))
   curl -X POST \
   https://faas-preview.pre-fx.alibaba-inc.com/api/writelog \
@@ -94,7 +95,7 @@ function posttolog {
   -F data="{\"data\": $data}"
 }
 
-function timer {
+timer() {
 	timegap=$1
 	shift
 	while true
@@ -108,7 +109,7 @@ function timer {
 }
 
 
-function analizeCode {
+analizeCode() {
 	giturl=$1
 	repoName=$(basename $giturl)
 	mkdir -p ~/.codeTmp 
@@ -127,22 +128,22 @@ function analizeCode {
 	done
 }
 
-function gitFindAll {
+gitFindAll() {
 	git log -S $1 --source --all -p
 }
 
-function note {
+note() {
 	vim ~/mynote
 }
 
-function newhs {
+newhs() {
 	filepath=$1.hs
 	touch $filepath 
 	chmod +x $filepath
 	echo "#!/usr/local/bin/runhaskell" >> $filepath 
 }
 
-function json2ts {
+json2ts() {
 	json=$(pbpaste -Prefer text)
 	code=$(cat <<- EOF
 		const interfaceDefinition = require('json-to-ts-interface');
@@ -153,11 +154,11 @@ function json2ts {
 	node -e $code
 }
 database=$(dirname $0)/database
-function db_set {
+db_set() {
 	echo "$1,$2" >> database
 }
 
-function db_get {
+db_get() {
 	grep "^$1," database | sed -e "s/^$1,//" | tail -n 1
 }
 
