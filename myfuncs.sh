@@ -203,3 +203,10 @@ watchClipboard() {
 		fi	
 	done
 }
+clipImage() {
+	openImg() {
+		url=$(clipboard)
+		wget $url -O /tmp/a.png && open /tmp/a.png
+	}
+	watchClipboard 
+}
