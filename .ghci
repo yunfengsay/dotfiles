@@ -1,0 +1,6 @@
+
+--https://www.youtube.com/channel/UCQMkHY8U6B9tefTQdPkpY7A
+let ghciEscapeShellArg arg = "'" ++ concatMap (\c -> if c == '\'' then "'\"'\"'" else [c]) arg ++ "'"
+:def! search return . (":! hoogle --color " ++) . ghciEscapeShellArg
+:def! doc return . (":! hoogle --info " ++) . ghciEscapeShellArg
+:def! grep return . (":! grep -nr --include=*.hs " ++) . ghciEscapeShellArg
