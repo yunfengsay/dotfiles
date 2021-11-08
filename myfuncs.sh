@@ -1,8 +1,8 @@
-hw() {
+function hw() {
 	vim ~/.mybin/vimHelp
 }
 
-h() {
+function h {
     echo    "⌘ + d: 垂直分屏"
     echo    "⌘ + shift + d: 水平分屏。"
     echo    "⌘ + ]和⌘ + [在最近使用的分屏直接切换."
@@ -12,41 +12,40 @@ h() {
     echo    "shift + ⌘ + s: 保存当前窗口快照。"
     echo    "⌘ + opt + b: 快照回放。很有意思的功能，你可以对你的操作根据时间轴进行回放。可以拖动下方的时间轴，也可以按左右方向键"
 	  echo    "ctrl + o 返回上次的缓存文件"
-	  cat ~/.mybin/vimHelp
+	cat ~/.mybin/vimHelp
 }
 
-ff() {
+function ff {
 	source ~/.bash_profile
-	source ~/.bashrc
 	source ~/.zshrc
 }
-ffs() {
+function ffs {
 	source ~/.myfuncs.sh
 }
 
-newfunc() {
+function newfunc {
 	vim ~/.myfuncs.sh
 }
 
-proxy() {
+function proxy {
 	export http_proxy="http://127.0.0.1:1087"
 	export https_proxy="http://127.0.0.1:1087"
 }
 
-unproxy() {
+function unproxy {
 	unset http_proxy
 	unset https_proxy
 }
 
-lsofi() {
+function lsofi {
 	lsof -i:$1
 }
 
-pi() {
+function pi {
 	ssh pi@118.25.13.120 -p 1235 -o ServerAliveInterval=30
 }
 
-loopurl() {
+function loopurl {
 	for ((i=1;i<=$1;i++)); 
 	do   
 		curl -v --header "Connection: keep-alive" $2;
@@ -54,15 +53,15 @@ loopurl() {
 	done
 }
 
-showMe() {
+function showMe {
 	git log --author=$user --pretty=tformat: --numstat | awk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "added-lines: %s removed-lines : %s total-lines: %s\n",add,subs,loc }' -
 }
 
-ios() {
+function ios {
 	xcrun instruments -w A9B40433-90ED-4F3F-A1D9-71E3CF4839A7
 }
 
-showAll() {
+function showAll {
 	alluser=$(git log --format='%aN' | sort -u)
 	while read -r user
 	do 
@@ -72,12 +71,12 @@ showAll() {
 	done
 }
 
-blog() {
+function blog {
 	open "https://www.yuque.com/yunfengsay/hdensz"
 
 }
 
-killport() {
+function killport {
 	echo "killing $1"
 	echo "running kill -9 $(lsof -t -i:$1)"
 	kill -9 $(lsof -t -i:$1)
@@ -85,7 +84,7 @@ killport() {
 	# lsof -i:$1 | awk 'NR==1 {next} {print $2 }'
 }
 
-posttolog() {
+function posttolog {
 	data=$(echo $(cat $1))
   curl -X POST \
   https://faas-preview.pre-fx.alibaba-inc.com/api/writelog \
@@ -95,7 +94,7 @@ posttolog() {
   -F data="{\"data\": $data}"
 }
 
-timer() {
+function timer {
 	timegap=$1
 	shift
 	while true
@@ -109,7 +108,7 @@ timer() {
 }
 
 
-analizeCode() {
+function analizeCode {
 	giturl=$1
 	repoName=$(basename $giturl)
 	mkdir -p ~/.codeTmp 
@@ -128,22 +127,22 @@ analizeCode() {
 	done
 }
 
-gitFindAll() {
+function gitFindAll {
 	git log -S $1 --source --all -p
 }
 
-note() {
+function note {
 	vim ~/mynote
 }
 
-newhs() {
+function newhs {
 	filepath=$1.hs
 	touch $filepath 
 	chmod +x $filepath
 	echo "#!/usr/local/bin/runhaskell" >> $filepath 
 }
 
-json2ts() {
+function json2ts {
 	json=$(pbpaste -Prefer text)
 	code=$(cat <<- EOF
 		const interfaceDefinition = require('json-to-ts-interface');
@@ -154,11 +153,11 @@ json2ts() {
 	node -e $code
 }
 database=$(dirname $0)/database
-db_set() {
+function db_set {
 	echo "$1,$2" >> database
 }
 
-db_get() {
+function db_get {
 	grep "^$1," database | sed -e "s/^$1,//" | tail -n 1
 }
 
@@ -207,7 +206,15 @@ watchClipboard() {
 clipImage() {
 	openImg() {
 		url=$(clipboard)
-		wget $url -O /tmp/a.png && open /tmp/a.png
+		# wget $url -O /tmp/a.png
+		# open /tmp/a.png
+    chrome $url
 	}
-	watchClipboard 
+	watchClipboard openImg
+}
+findALlGit() {
+	find . -type d -exec test -e '{}/.git' ';' -print -prune
+}
+backupallGit() {
+  findALlGit| xargs -I path sh -c "cat path/.git/config | grep -A 3 '\[remote \"origin\"\]' | grep url | tr -d 'url ='"
 }
